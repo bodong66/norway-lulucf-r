@@ -71,3 +71,13 @@ ggplot(totals, aes(year, value_kt / 1000)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(y = "Mt CO2-eq", title = "Norway LULUCF net emissions/removals")
+
+source(here::here("R", "read_table4e.R"))
+
+files <- list.files(here::here("data-raw"), pattern = "^NOR-CRT.*\\.xlsx$",
+                    full.names = TRUE, recursive = TRUE)
+
+settlements <- map(files, read_table4e) |> list_rbind()
+write.csv(settlements, here::here("data", "lulucf_table4e_settlements.csv"), row.names = FALSE)
+
+

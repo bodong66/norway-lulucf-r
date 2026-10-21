@@ -49,3 +49,10 @@ test_that("QA checks detect an injected error", {
   expect_gt(nrow(check_hierarchy(bad)), 0)
   expect_gt(nrow(check_gwp(bad)), 0)
 })
+
+
+s4e <- read.csv(here::here("data", "lulucf_table4e_settlements.csv"))
+
+test_that("carbon stock changes convert to reported CO2 (x -44/12)", {
+  expect_equal(nrow(check_c_to_co2(s4e)), 0)
+})
