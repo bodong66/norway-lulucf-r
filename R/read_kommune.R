@@ -23,3 +23,6 @@ get_kommune_names <- function(date = "2024-01-01") {
     _$codes |>
     select(kommunenr = code, kommune = name)
 }
+
+
+
