@@ -34,11 +34,3 @@ t4e |> select(code, area_kha, lb_net_ktc, dom_net_ktc, co2_kt)
 settlements <- map(files, read_table4e) |> list_rbind()
 write.csv(settlements, here::here("data", "lulucf_table4e_settlements.csv"), row.names = FALSE)
 
-# Net CO2 = -(sum of carbon stock changes) * 44/12
-check_c_to_co2 <- function(df, tol = 0.5) {
-  df |>
-    mutate(co2_calc = -(coalesce(lb_net_ktc, 0) + coalesce(dom_net_ktc, 0) +
-                          coalesce(min_soil_ktc, 0) + coalesce(org_soil_ktc, 0)) * 44 / 12,
-           diff = co2_calc - co2_kt) |>
-    filter(!is.na(co2_kt), abs(diff) > tol)
-}

@@ -50,3 +50,5 @@ po/*~
 rsconnect/
 
 data-raw/
+report.html
+report_files/

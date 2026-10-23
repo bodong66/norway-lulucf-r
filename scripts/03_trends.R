@@ -93,6 +93,7 @@ tot |>
   select(code, category, value_mt)
 
 # Forest land converted to settlements, 2024 (Mt CO2)
+settlements <- read.csv(here::here("data", "lulucf_table4e_settlements.csv"))
 settlements |>
   filter(year == 2024, code == "4.E.2.a") |>
   mutate(co2_mt = co2_kt / 1000) |>

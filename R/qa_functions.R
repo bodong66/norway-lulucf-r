@@ -64,3 +64,13 @@ check_magnitude <- function(df, max_abs_kt = 1e5) {
   df |>
     filter(abs(value_kt) > max_abs_kt)
 }
+
+
+# Net CO2 = -(sum of carbon stock changes) * 44/12
+check_c_to_co2 <- function(df, tol = 0.5) {
+  df |>
+    mutate(co2_calc = -(coalesce(lb_net_ktc, 0) + coalesce(dom_net_ktc, 0) +
+                          coalesce(min_soil_ktc, 0) + coalesce(org_soil_ktc, 0)) * 44 / 12,
+           diff = co2_calc - co2_kt) |>
+    filter(!is.na(co2_kt), abs(diff) > tol)
+}

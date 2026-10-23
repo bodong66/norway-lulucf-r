@@ -32,3 +32,9 @@ of dead organic matter and living biomass.
 Sources: UNFCCC CRT tables, Norway 2026 submission (own calculations);
 [Miljødirektoratet (2024)](https://www.miljodirektoratet.no/aktuelt/nyheter/2024/oktober-2024/nye-tal-for-opptak-og-utslepp-fra-areal-i-kommunar);
 [Søgaard (2024), NIBIO](https://www.skog.is/wp-content/uploads/2024/04/2024-04-20-Foredrag-fra-Norge.pdf).
+
+
+**Municipal boundaries:** The municipal accounts use 2024 municipality numbers,
+except 1507 Ålesund, which covers the 2020–2023 municipality (today's 1508
+Ålesund and 1580 Haram). Names are taken from SSB's classification 131
+(2024 version); 1507 is labelled manually.

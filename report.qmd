@@ -1,0 +1,107 @@
+---
+title: "Norway LULUCF Greenhouse Gas Emissions and Removals, 1990–2024"
+author: "Bo Dong"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(here)
+
+lulucf <- read.csv(here("data", "lulucf_table4_long.csv"))
+settlements <- read.csv(here("data", "lulucf_table4e_settlements.csv"))
+
+tot <- lulucf |>
+  filter(gas == "total_co2eq") |>
+  mutate(value_mt = value_kt / 1000,
+         category = category |>
+           str_remove("\\s*\\((\\d+|please specify)\\)$") |>
+           str_remove("^[0-9A-Z.]+\\s"))
+```
+
+## Summary
+
+(Paste your "Key findings" paragraph from the README here.)
+
+## Data and methods
+
+- **Source:** Norway's 2026 submission to the UNFCCC, Common Reporting Tables (CRT), Table 4 and Table 4.E, inventory years 1990–2024.
+- **Processing:** Tables are read and reshaped in R (`readxl`, `dplyr`, `tidyr`). Raw files are not stored in the repository; see README for download instructions.
+- **Quality assurance:** Automated checks with `testthat` (see `tests/testthat/`).
+
+## Quality assurance
+
+```{r}
+#| label: qa
+source(here("R", "qa_functions.R"))
+
+tibble(
+  check = c("Missing years", "Duplicate rows",
+            "Hierarchy (subcategories = parent)",
+            "GWP consistency (AR5)", "Carbon to CO2 (Table 4.E)"),
+  issues = c(length(check_years(lulucf)),
+             nrow(check_duplicates(lulucf)),
+             nrow(check_hierarchy(lulucf)),
+             nrow(check_gwp(lulucf)),
+             nrow(check_c_to_co2(settlements)))
+) |>
+  knitr::kable()
+```
+
+## Forest land
+
+```{r}
+#| label: fig-forest
+#| fig-cap: "Net emissions/removals from forest land. Negative values are net removals."
+tot |>
+  filter(code %in% c("4.A", "4.A.1", "4.A.2")) |>
+  ggplot(aes(year, value_mt, colour = category)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = NULL, y = "Mt CO2-eq", colour = NULL) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+```
+
+## All land-use categories
+
+```{r}
+#| label: fig-categories
+#| fig-cap: "Net emissions/removals by land-use category."
+tot |>
+  filter(level == 1) |>
+  ggplot(aes(year, value_mt, fill = category)) +
+  geom_col() +
+  geom_hline(yintercept = 0) +
+  labs(x = NULL, y = "Mt CO2-eq", fill = NULL) +
+  theme_minimal()
+```
+
+## Forest land converted to settlements
+
+```{r}
+#| label: fig-deforestation
+#| fig-cap: "Net CO2 emissions from forest land converted to settlements (CRT Table 4.E)."
+settlements |>
+  filter(code == "4.E.2.a") |>
+  ggplot(aes(year, co2_kt / 1000)) +
+  geom_col(fill = "grey40") +
+  labs(x = NULL, y = "Mt CO2") +
+  theme_minimal()
+```
+
+## Municipalities
+
+(To be added: municipal LULUCF accounts from NIBIO / Miljødirektoratet.)
