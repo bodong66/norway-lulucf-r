@@ -27,21 +27,7 @@ test_that("values have plausible magnitude (kt)", {
   expect_equal(nrow(check_magnitude(df)), 0)
 })
 
-source(here::here("R", "qa_functions.R"))
-df <- read.csv(here::here("data", "lulucf_table4_long.csv"))
 
-# How many parent-child comparisons were actually made?
-df |>
-  filter(level > 0) |>
-  mutate(parent = parent_code(code)) |>
-  distinct(parent) |>
-  pull(parent)
-
-bad <- df
-bad$value_kt[bad$code == "4.A.1" & bad$year == 2024 & bad$gas == "co2_net"] <- 0
-
-check_hierarchy(bad)   # should return rows for 4.A in 2024
-check_gwp(bad)         # should return the 4.A.1 row for 2024
 
 test_that("QA checks detect an injected error", {
   bad <- df

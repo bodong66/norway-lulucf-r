@@ -27,10 +27,3 @@ read_table4e <- function(path) {
     )
 }
 
-# Test on 2024
-t4e <- read_table4e(f)
-t4e |> select(code, area_kha, lb_net_ktc, dom_net_ktc, co2_kt)
-
-settlements <- map(files, read_table4e) |> list_rbind()
-write.csv(settlements, here::here("data", "lulucf_table4e_settlements.csv"), row.names = FALSE)
-
